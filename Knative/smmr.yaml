@@ -5,5 +5,5 @@ metadata:
   namespace: istio-system
 spec:
   members:
-  - knative-serving
-  - serverless-demo
+    - knative-serving
+    - serverless-demo
