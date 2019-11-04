@@ -19,9 +19,16 @@ oc edit -n istio-system ServiceMeshMemberRoll default
 ----
 
 ### Deploy the HelloWorld application
-
+. Deploy the application from definition file
++
 [source,bash]
 ----
 oc apply -f https://raw.githubusercontent.com/guimou/dataprep-doc/master/helloworld/service.yaml
 ----
+
+. A route has automatically been created in the #istio-system# project, based on the name of the service (in this case helloworld-go)
++
+ helloworld-go.serverless-helloworld.apps.<name of your cluster>
+
+
 

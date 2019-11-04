@@ -1,0 +1,74 @@
+# Deploying AMQ Streams
+:toc:
+
+### Install Red HAt AMQ Streams
+. Create a new project called amq-streams
++
+[source,bash]
+----
+oc new-project amq-streams
+----
+
+. Install the operator through the OperatotHub with the following parameters:
+- Installation mode on a specific namespace: amq-streams
+- Update channel: stable
+- Approval strategy: automatic
+
+. Deploy the kafka and zookeepers clusters from the definition file
++
+[source,bash]
+----
+oc apply -n amq-streams -f https://raw.githubusercontent.com/guimou/dataprep-doc/master/amq-streams/kafka-zookeeper.yaml
+----
+
+. Monitor the cluster progress
+[source,bash]
+----
+oc apply -n amq-streams get all
+----
+
+Final output shoould look like
+[source,bash]
+----
+$ oc get all
+NAME                                                      READY   STATUS    RESTARTS   AGE
+pod/amq-streams-cluster-operator-v1.3.0-b94f877f5-tzhhg   1/1     Running   0          6m24s
+pod/kafka-cluster-entity-operator-67668f5954-zwxzc        3/3     Running   0          31s
+pod/kafka-cluster-kafka-0                                 2/2     Running   0          2m58s
+pod/kafka-cluster-kafka-1                                 2/2     Running   0          2m58s
+pod/kafka-cluster-kafka-2                                 2/2     Running   0          2m58s
+pod/kafka-cluster-zookeeper-0                             2/2     Running   0          4m2s
+pod/kafka-cluster-zookeeper-1                             2/2     Running   0          4m2s
+pod/kafka-cluster-zookeeper-2                             2/2     Running   0          4m2s
+
+NAME                                             TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)                      AGE
+service/kafka-cluster-kafka-0                    ClusterIP   172.30.114.98    <none>        9094/TCP                     3m
+service/kafka-cluster-kafka-1                    ClusterIP   172.30.123.161   <none>        9094/TCP                     3m
+service/kafka-cluster-kafka-2                    ClusterIP   172.30.99.23     <none>        9094/TCP                     3m
+service/kafka-cluster-kafka-bootstrap            ClusterIP   172.30.228.1     <none>        9091/TCP,9092/TCP,9093/TCP   3m
+service/kafka-cluster-kafka-brokers              ClusterIP   None             <none>        9091/TCP,9092/TCP,9093/TCP   3m
+service/kafka-cluster-kafka-external-bootstrap   ClusterIP   172.30.121.94    <none>        9094/TCP                     3m
+service/kafka-cluster-zookeeper-client           ClusterIP   172.30.44.252    <none>        2181/TCP                     4m3s
+service/kafka-cluster-zookeeper-nodes            ClusterIP   None             <none>        2181/TCP,2888/TCP,3888/TCP   4m3s
+
+NAME                                                  READY   UP-TO-DATE   AVAILABLE   AGE
+deployment.apps/amq-streams-cluster-operator-v1.3.0   1/1     1            1           6m25s
+deployment.apps/kafka-cluster-entity-operator         1/1     1            1           32s
+
+NAME                                                            DESIRED   CURRENT   READY   AGE
+replicaset.apps/amq-streams-cluster-operator-v1.3.0-b94f877f5   1         1         1       6m25s
+replicaset.apps/kafka-cluster-entity-operator-67668f5954        1         1         1       32s
+
+NAME                                       READY   AGE
+statefulset.apps/kafka-cluster-kafka       3/3     2m59s
+statefulset.apps/kafka-cluster-zookeeper   3/3     4m3s
+
+NAME                                                     HOST/PORT                                                                                          PATH   SERVICES                                 PORT   TERMINATION   WILDCARD
+route.route.openshift.io/kafka-cluster-kafka-0           kafka-cluster-kafka-0-amq-streams.apps.cluster-espoo-ebad.espoo-ebad.example.opentlc.com                  kafka-cluster-kafka-0                    9094   passthrough   None
+route.route.openshift.io/kafka-cluster-kafka-1           kafka-cluster-kafka-1-amq-streams.apps.cluster-espoo-ebad.espoo-ebad.example.opentlc.com                  kafka-cluster-kafka-1                    9094   passthrough   None
+route.route.openshift.io/kafka-cluster-kafka-2           kafka-cluster-kafka-2-amq-streams.apps.cluster-espoo-ebad.espoo-ebad.example.opentlc.com                  kafka-cluster-kafka-2                    9094   passthrough   None
+route.route.openshift.io/kafka-cluster-kafka-bootstrap   kafka-cluster-kafka-bootstrap-amq-streams.apps.cluster-espoo-ebad.espoo-ebad.example.opentlc.com          kafka-cluster-kafka-external-bootstrap   9094   passthrough   None
+$
+----
+
+
