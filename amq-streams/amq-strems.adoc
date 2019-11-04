@@ -22,9 +22,10 @@ oc apply -n amq-streams -f https://raw.githubusercontent.com/guimou/dataprep-doc
 ----
 
 . Monitor the cluster progress
++
 [source,bash]
 ----
-oc apply -n amq-streams get all
+watch oc -n amq-streams get all
 ----
 
 Final output shoould look like
