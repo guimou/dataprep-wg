@@ -1,2 +1,4 @@
 # dataprep-doc
-Documentation for Data preparation project
+This repo holds several docs for the Data Preparation project:
+- [Knative](Installing OpenShift Serverless)
+
