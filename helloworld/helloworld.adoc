@@ -1,0 +1,27 @@
+# Deploying a sample Hello World application
+:toc:
+
+#### Prerequisites
+A working installation of OpenShift Serverless link:../serverless[Installation guide]
+
+### Create the namespace and add it to the ServiceMeshMemberRoll
+. Create the namespace
++
+[source,bash]
+----
+oc new-project serverless-helloworld
+----
+. Add the namespace to the spec/members section
++
+[source,bash]
+----
+oc edit -n istio-system ServiceMeshMemberRoll default
+----
+
+### Deploy the HelloWorld application
+
+[source,bash]
+----
+oc apply -f https://raw.githubusercontent.com/guimou/dataprep-doc/master/helloworld/service.yaml
+----
+
