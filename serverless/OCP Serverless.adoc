@@ -69,7 +69,7 @@ oc new-project istio-system
 +
 [source,bash]
 ----
-oc apply -f https://raw.githubusercontent.com/guimou/dataprep-doc/master/Knative/scmp.yaml
+oc apply -f https://raw.githubusercontent.com/guimou/dataprep-doc/master/serverless/scmp.yaml
 ----
 
 . Verify pods deployment progress
@@ -84,7 +84,7 @@ watch oc get pods -n istio-system
 +
 [source,bash]
 ----
-oc apply -f https://github.com/guimou/dataprep-doc/raw/master/Knative/smmr.yaml
+oc apply -f https://github.com/guimou/dataprep-doc/raw/master/serverless/smmr.yaml
 ----
 
 *NB*: If you need to add another serverless project afterwards, you must edit ServiceMeshMemberRoll "default" juste created and add the project to the spec/members section. Don't remove "knative-serving" namespace!
@@ -112,7 +112,7 @@ oc edit -n istio-system ServiceMeshMemberRoll default
 +
 [source,bash]
 ----
-oc apply -f https://github.com/guimou/dataprep-doc/raw/master/Knative/serving.yaml
+oc apply -f https://github.com/guimou/dataprep-doc/raw/master/serverless/serving.yaml
 ----
 . Verify the installation is complete
 +
