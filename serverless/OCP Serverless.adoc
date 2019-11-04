@@ -1,0 +1,129 @@
+# OpenShift Serverless installation
+:toc:
+
+#### Prerequisites
+Check cluster size requirements, please check the https://docs.openshift.com/container-platform/4.2/serverless/installing-openshift-serverless.html[Full Installation guide]
+
+## Service Mesh
+An installed version of Service Mesh is required for the installation of OpenShift Serverless.
+
+### Install the Elasticsearch Operator
+. Log in to the OpenShift Container Platform web console.
+. Navigate to Operators → OperatorHub.
+. Type Elasticsearch into the filter box to locate the Elasticsearch Operator.
+. Click the Elasticsearch Operator to display information about the Operator.
+. Click Install.
+. On the Create Operator Subscription page, select All namespaces on the cluster (default). This installs the Operator in the default openshift-operators project and makes the Operator available to all projects in the cluster.
+. Select the preview Update Channel.
+. Select the Automatic Approval Strategy.
+. Click Subscribe.
+. The Subscription Overview page displays the Elasticsearch Operator’s installation progress.
+
+### Install the Jaeger Operator
+. Log in to the OpenShift Container Platform web console.
+. Navigate to Operators → OperatorHub.
+. Type Jaeger into the filter box to locate the Jaeger Operator.
+. Click the Jaeger Operator provided by Red Hat to display information about the Operator.
+. Click Install.
+. On the Create Operator Subscription page, select All namespaces on the cluster (default). This installs the Operator in the default openshift-operators project and makes the Operator available to all projects in the cluster.
+. Select the stable Update Channel.
+. Select the Automatic Approval Strategy.
+. Click Subscribe.
+. The Subscription Overview page displays the Jaeger Operator’s installation progress.
+
+### Install the Kiali Operator
+. Log in to the OpenShift Container Platform web console.
+. Navigate to Operators → OperatorHub.
+. Type Kiali into the filter box to find the Kiali Operator.
+. Click the Kiali Operator provided by Red Hat to display information about the Operator.
+. Click Install.
+. On the Create Operator Subscription page, select All namespaces on the cluster (default). This installs the Operator in the default openshift-operators project and makes the Operator available to all projects in the cluster.
+. Select the stable Update Channel.
+. Select the Automatic Approval Strategy.
+. Click Subscribe.
+. The Subscription Overview page displays the Kiali Operator’s installation progress.
+
+### Install the Red Hat OpenShift Service Mesh Operator
+. Log in to the OpenShift Container Platform web console.
+. Navigate to Operators → OperatorHub.
+. Type Red Hat OpenShift Service Mesh into the filter box to find the Red Hat OpenShift Service Mesh Operator.
+. Click the Red Hat OpenShift Service Mesh Operator to display information about the Operator.
+. On the Create Operator Subscription page, select All namespaces on the cluster (default). This installs the Operator in the default openshift-operators project and makes the Operator available to all projects in the cluster.
+. Click Install.
+. Select the 1.0 Update Channel.
+. Select the Automatic Approval Strategy.
+. Click Subscribe.
+. The Subscription Overview page displays the Red Hat OpenShift Service Mesh Operator’s installation progress.
+
+
+### Install the Service Mesh Control Place
+
+. Create the istio-system project (only supported namespace)
++
+[source,bash]
+----
+oc new-project istio-system
+----
+
+. Install the ServiceMeshControlPlane
++
+[source,bash]
+----
+oc apply -f https://raw.githubusercontent.com/guimou/dataprep-doc/master/serverless/scmp.yaml
+----
+
+. Verify pods deployment progress
++
+[source,bash]
+----
+watch oc get pods -n istio-system
+----
+
+### Install a ServiceMeshMemberRoll
+. Install the ServiceMeshMemberRoll
++
+[source,bash]
+----
+oc apply -f https://github.com/guimou/dataprep-doc/raw/master/serverless/smmr.yaml
+----
+
+*NB*: If you need to add another serverless project afterwards, you must edit ServiceMeshMemberRoll "default" juste created and add the project to the spec/members section. Don't remove "knative-serving" namespace!
+
+[source,bash]
+----
+oc edit -n istio-system ServiceMeshMemberRoll default
+----
+
+## ServerLess Operator
+### Install the OpenShift Serverless Operator
+. Log in to the OpenShift Container Platform web console.
+. Navigate to Operators → OperatorHub.
+. Type OpenShift Serverless Operator into the filter box to find the OpenShift Serverless Operator.
+. Click the OpenShift Serverless Operator to display information about the Operator.
+. On the Create Operator Subscription page, select All namespaces on the cluster (default). This installs the Operator in the default openshift-operators project and makes the Operator available to all projects in the cluster.
+. Click Install.
+. Select the techpreview Channel.
+. Select the Automatic Approval Strategy.
+. Click Subscribe.
+. The Subscription Overview page displays the OpenShift Serverless Operator’s installation progress.
+
+### Install Knative Serving
+. Create the knative-serving namespace and install Knative Serving
++
+[source,bash]
+----
+oc apply -f https://github.com/guimou/dataprep-doc/raw/master/serverless/serving.yaml
+----
+. Verify the installation is complete
++
+[source,bash]
+----
+oc get knativeserving/knative-serving -n knative-serving --template='{{range .status.conditions}}{{printf "%s=%s\n" .type .status}}{{end}}'
+----
++
+Result should be similar to:
+[source,bash]
+DependenciesInstalled=True
+DeploymentsAvailable=True
+InstallSucceeded=True
+Ready=True
