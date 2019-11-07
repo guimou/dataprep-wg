@@ -7,13 +7,13 @@ A working installation of OpenShift Serverless link:../serverless[Installation g
 ### Create the namespace and add it to the ServiceMeshMemberRoll
 . Create the namespace
 +
-[source,bash]
+[source,role="execute"]
 ----
 oc new-project serverless-helloworld
 ----
 . Add the namespace to the spec/members section
 +
-[source,bash]
+[source,role="execute"]
 ----
 oc edit -n istio-system ServiceMeshMemberRoll default
 ----
@@ -21,14 +21,16 @@ oc edit -n istio-system ServiceMeshMemberRoll default
 ### Deploy the HelloWorld application
 . Deploy the application from definition file
 +
-[source,bash]
+[source,role="execute"]
 ----
 oc apply -f https://raw.githubusercontent.com/guimou/dataprep-doc/master/helloworld/service.yaml
 ----
 
-. A route has automatically been created in the #istio-system# project, based on the name of the service (in this case helloworld-go)
+. A route has automatically been created, based on the name of the service (in this case helloworld-go) you can find it by running
 +
- helloworld-go.serverless-helloworld.apps.<name of your cluster>
+[source,role="execute"]
+----
+oc get routes.serving.knative.dev -n serverless-helloworld
 
 
 
